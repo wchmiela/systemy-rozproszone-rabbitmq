@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+
+    id 'application'
+}
+
+mainClassName = 'Runner'
+
+dependencies {
+    compile 'com.rabbitmq:amqp-client:5.1.2'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+
+    testCompile 'junit:junit:4.12'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
