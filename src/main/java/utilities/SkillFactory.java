@@ -1,8 +1,10 @@
+package utilities;
+
 import operations.*;
 
-class SkillFactory {
+public class SkillFactory {
 
-    static Operation getType(String skill) {
+    public static Operation getType(String skill) {
         String lowerCaseSkill = skill.toLowerCase();
         switch (lowerCaseSkill) {
             case "elbow":

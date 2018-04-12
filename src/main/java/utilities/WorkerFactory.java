@@ -1,9 +1,11 @@
+package utilities;
+
 import crew.*;
 import operations.Operation;
 
-class WorkerFactory {
+public class WorkerFactory {
 
-    static Worker getType(String type, String skill1, String skill2) {
+    public static Worker getType(String type, String skill1, String skill2) {
         String lowerCaseType = type.toLowerCase();
         switch (lowerCaseType) {
             case "doc":

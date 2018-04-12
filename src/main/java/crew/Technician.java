@@ -6,6 +6,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import operations.Operation;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.IOException;
 
@@ -13,10 +14,12 @@ public class Technician extends Worker {
 
     private Operation firstSkill;
     private Operation secondSkill;
+    private Technician myself;
 
     public Technician(Operation firstSkill, Operation secondSkill) {
         this.firstSkill = firstSkill;
         this.secondSkill = secondSkill;
+        this.myself = this;
     }
 
     @Override
@@ -32,8 +35,14 @@ public class Technician extends Worker {
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                String message = new String(body, "UTF-8");
-                System.out.println("Received: " + message);
+                DoctorRequest request = SerializationUtils.deserialize(body);
+                System.out.println(String.format("Otrzymano: %s", request));
+
+                TechnicianReply reply = new TechnicianReply(request, myself);
+                byte[] data = SerializationUtils.serialize(reply);
+
+                getChannel().basicPublish("", QUEUE_NAME, null, data);
+                System.out.println(String.format("Wyslano: %s", reply));
             }
         };
 

@@ -3,11 +3,12 @@ package crew;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class Worker {
+public abstract class Worker implements Serializable {
 
     private String name;
-    private Channel channel;
+    private transient Channel channel;
 
     public void setName(String newName) {
         this.name = newName;
@@ -23,7 +24,7 @@ public abstract class Worker {
 
     public abstract void work() throws IOException;
 
-    public void setChanel(Channel channel){
+    public void setChanel(Channel channel) {
         this.channel = channel;
     }
 

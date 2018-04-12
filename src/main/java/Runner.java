@@ -2,6 +2,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import crew.Worker;
+import utilities.WorkerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,9 +12,11 @@ import java.util.concurrent.TimeoutException;
 public class Runner {
 
     public static void main(String[] args) {
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
-        System.out.println("Podaj typ (doc|tech|admin)");
+        System.out.println("Konfiguracja START");
+        System.out.println("Typ pracownika (doc|tech|admin)");
+        System.out.println("Typ umiejetnosci technika (hip|elbow|knee)");
 
         String type = "";
         try {
@@ -27,7 +30,6 @@ public class Runner {
         String skill2 = "";
 
         if (type.equals("tech")) {
-            System.out.println("Podaj typ (hip|elbow|knee)");
             try {
                 System.out.print("Podaj 1 typ obslugiwanych operacji: ");
                 skill1 = bufferedReader.readLine();
@@ -62,10 +64,11 @@ public class Runner {
         worker.setName(name);
         worker.introduceYourself();
         worker.setChanel(channel);
+        System.out.println("Konfiguracja STOP");
         try {
             worker.work();
         } catch (IOException e) {
-            System.out.println("Wystapil blad w pracy" + worker);
+            System.out.println("Wystapil blad w pracy " + worker);
         }
     }
 }
