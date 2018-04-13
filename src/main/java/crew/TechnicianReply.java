@@ -12,6 +12,14 @@ public class TechnicianReply implements Serializable {
         this.technician = technician;
     }
 
+    public String makeRoutingKey() {
+        return request.getDoctor().getName();
+    }
+
+    public static String makeRoutingKey(String operationName, String patientName, String doctorName) {
+        return String.join(".", operationName, patientName, doctorName);
+    }
+
     @Override
     public String toString() {
         return String.format("%s Wykonal: %s", request, technician.getName());

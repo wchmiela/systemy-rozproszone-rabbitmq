@@ -15,8 +15,20 @@ public class DoctorRequest implements Serializable {
         this.operation = operation;
     }
 
+    public String makeRoutingKey() {
+        return String.join(".", operation.operationName(), patientName, doctor.getName());
+    }
+
+    public static String makeRoutingKey(String operationName, String patientName, String doctorName) {
+        return String.join(".", operationName, patientName, doctorName);
+    }
+
     @Override
     public String toString() {
         return String.format("Badanie: %s Pacjent: %s Zlecił: %s", operation, patientName, doctor);
+    }
+
+    public Worker getDoctor() {
+        return doctor;
     }
 }

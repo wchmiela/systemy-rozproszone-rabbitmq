@@ -9,6 +9,7 @@ mainClassName = 'Runner'
 dependencies {
     compile 'com.rabbitmq:amqp-client:5.1.2'
     compile 'org.slf4j:slf4j-simple:1.7.25'
+    compile 'org.apache.commons:commons-lang3:3.5'
 
     testCompile 'junit:junit:4.12'
 }

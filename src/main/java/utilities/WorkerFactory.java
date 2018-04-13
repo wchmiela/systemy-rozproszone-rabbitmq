@@ -1,7 +1,9 @@
 package utilities;
 
+import com.rabbitmq.client.Connection;
 import crew.*;
 import operations.Operation;
+
 
 public class WorkerFactory {
 
