@@ -21,15 +21,20 @@ public class Doctor extends Worker {
                 false, false, false, null).getQueue();
         getChannel().queueBind(queueName, exchangeName, queueName);
 
+        String adminQ = getChannel().queueDeclare(getName(),
+                false, false, false, null).getQueue();
+        getChannel().queueBind(adminQ, exchangeName, "Info");
+
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                TechnicianReply reply = SerializationUtils.deserialize(body);
-                System.out.println(String.format("Otrzymano> %s", reply));
+                SerializationWrapper reply = SerializationUtils.deserialize(body);
+                System.out.println(String.format("Otrzymano>\t %s", reply));
             }
         };
 
         getChannel().basicConsume(queueName, true, consumer);
+        getChannel().basicConsume(adminQ, true, consumer);
 
         while (true) {
             send(exchangeName);
@@ -37,9 +42,9 @@ public class Doctor extends Worker {
     }
 
     private void send(String exchangeName) throws IOException {
-        System.out.print("Podaj imie pacienta: ");
+        System.out.println("Podaj imie pacienta: ");
         String patientName = bufferedReader.readLine();
-        System.out.print("Podaj typ badania: ");
+        System.out.println("Podaj typ badania: ");
         String type = bufferedReader.readLine();
 
         DoctorRequest request = new DoctorRequest(this, patientName, SkillFactory.getType(type));
@@ -47,7 +52,7 @@ public class Doctor extends Worker {
 
         getChannel().basicPublish(exchangeName, request.makeRoutingKey(), null, data);
 
-        System.out.println(String.format("Wyslano: %s", request));
+        System.out.println(String.format("Wyslano>\t %s", request));
     }
 
     @Override

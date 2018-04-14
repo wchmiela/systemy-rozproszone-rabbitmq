@@ -2,7 +2,7 @@ package crew;
 
 import java.io.Serializable;
 
-public class TechnicianReply implements Serializable {
+public class TechnicianReply extends SerializationWrapper implements Serializable {
 
     private final DoctorRequest request;
     private final Worker technician;
@@ -22,6 +22,6 @@ public class TechnicianReply implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s Wykonal: %s", request, technician.getName());
+        return String.format("%s Wykonal: %s.", request, technician.getName());
     }
 }

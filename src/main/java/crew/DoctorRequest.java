@@ -4,7 +4,7 @@ import operations.Operation;
 
 import java.io.Serializable;
 
-public class DoctorRequest implements Serializable {
+public class DoctorRequest extends SerializationWrapper implements Serializable  {
     private Worker doctor;
     private String patientName;
     private Operation operation;
@@ -25,7 +25,7 @@ public class DoctorRequest implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Badanie: %s Pacjent: %s Zlecił: %s", operation, patientName, doctor);
+        return String.format("Badanie: %s. Pacjent: %s. Zlecił: %s.", operation, patientName, doctor);
     }
 
     public Worker getDoctor() {
