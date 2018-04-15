@@ -1,18 +1,20 @@
-package crew;
+package messages;
+
+import crew.Worker;
 
 import java.io.Serializable;
 
-class TechnicianReply extends SerializationWrapper implements Serializable {
+public class TechnicianReply extends SerializationWrapper implements Serializable {
 
     private final DoctorRequest request;
     private final Worker technician;
 
-    TechnicianReply(DoctorRequest request, Worker technician) {
+    public TechnicianReply(DoctorRequest request, Worker technician) {
         this.request = request;
         this.technician = technician;
     }
 
-    String makeRoutingKey() {
+    public String makeRoutingKey() {
         return request.getDoctor().getName();
     }
 

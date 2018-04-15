@@ -1,6 +1,8 @@
 package crew;
 
 import com.rabbitmq.client.*;
+import messages.AdminMessage;
+import messages.SerializationWrapper;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.BufferedReader;

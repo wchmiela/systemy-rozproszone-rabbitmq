@@ -1,6 +1,10 @@
 package crew;
 
 import com.rabbitmq.client.*;
+import messages.AdminMessage;
+import messages.DoctorRequest;
+import messages.SerializationWrapper;
+import messages.TechnicianReply;
 import operations.Operation;
 import org.apache.commons.lang3.SerializationUtils;
 

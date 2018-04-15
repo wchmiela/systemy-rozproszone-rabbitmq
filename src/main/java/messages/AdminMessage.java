@@ -1,17 +1,20 @@
-package crew;
+package messages;
+
+import crew.Worker;
+import messages.SerializationWrapper;
 
 import java.io.Serializable;
 
-class AdminMessage extends SerializationWrapper implements Serializable {
+public class AdminMessage extends SerializationWrapper implements Serializable {
     private final String message;
     private final Worker admin;
 
-    AdminMessage(String message, Worker admin) {
+    public AdminMessage(String message, Worker admin) {
         this.message = message;
         this.admin = admin;
     }
 
-    static String makeRoutingKey() {
+    public static String makeRoutingKey() {
         return "Info";
     }
 

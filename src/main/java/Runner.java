@@ -70,7 +70,5 @@ class Runner {
         } catch (IOException e) {
             System.out.println("Wystapil blad w pracy " + worker);
         }
-
-        System.exit(0);
     }
 }

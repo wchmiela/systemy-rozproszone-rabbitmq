@@ -22,7 +22,7 @@ public abstract class Worker implements Serializable {
         this.name = newName;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -30,7 +30,7 @@ public abstract class Worker implements Serializable {
         this.channel = channel;
     }
 
-    Channel getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 }
