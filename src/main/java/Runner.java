@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeoutException;
 
-public class Runner {
+class Runner {
 
     public static void main(String[] args) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -50,7 +50,7 @@ public class Runner {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
-        Connection connection = null;
+        Connection connection;
         Channel channel = null;
 
         try {
@@ -70,5 +70,7 @@ public class Runner {
         } catch (IOException e) {
             System.out.println("Wystapil blad w pracy " + worker);
         }
+
+        System.exit(0);
     }
 }

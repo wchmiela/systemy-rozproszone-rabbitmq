@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class KneeOperation implements Operation, Serializable {
     @Override
-    public String toString() {
-        return "operacja kolana";
+    public String operationName() {
+        return "knee";
     }
 
     @Override
-    public String operationName() {
-        return "knee";
+    public String toString() {
+        return "operacja kolana";
     }
 }

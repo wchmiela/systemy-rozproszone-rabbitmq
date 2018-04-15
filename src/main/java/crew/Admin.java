@@ -9,12 +9,7 @@ import java.io.InputStreamReader;
 
 public class Admin extends Worker {
 
-    private transient BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-
-    @Override
-    public String toString() {
-        return String.format("Admin %s", getName());
-    }
+    private final transient BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
     public void work() throws IOException {
@@ -26,7 +21,7 @@ public class Admin extends Worker {
 
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 SerializationWrapper received = SerializationUtils.deserialize(body);
 
                 System.out.println(String.format("Otrzymano>\t %s", received));
@@ -35,18 +30,25 @@ public class Admin extends Worker {
 
         getChannel().basicConsume(queueName, true, consumer);
 
-        while (true) {
-            send(exchangeName);
-        }
+        while (send(exchangeName));
     }
 
-    private void send(String exchangeName) throws IOException {
+    private boolean send(String exchangeName) throws IOException {
         System.out.println("Podaj wiadomosc: ");
         String adminMessage = bufferedReader.readLine();
+
+        if (adminMessage.equals("exit")) return false;
 
         AdminMessage request = new AdminMessage(adminMessage, this);
         byte[] data = SerializationUtils.serialize(request);
 
         getChannel().basicPublish(exchangeName, AdminMessage.makeRoutingKey(), null, data);
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Admin %s", super.getName());
     }
 }

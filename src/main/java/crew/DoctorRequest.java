@@ -4,22 +4,22 @@ import operations.Operation;
 
 import java.io.Serializable;
 
-public class DoctorRequest extends SerializationWrapper implements Serializable  {
-    private Worker doctor;
-    private String patientName;
-    private Operation operation;
+class DoctorRequest extends SerializationWrapper implements Serializable  {
+    private final Worker doctor;
+    private final String patientName;
+    private final Operation operation;
 
-    public DoctorRequest(Worker doctor, String patientName, Operation operation) {
+    DoctorRequest(Worker doctor, String patientName, Operation operation) {
         this.doctor = doctor;
         this.patientName = patientName;
         this.operation = operation;
     }
 
-    public String makeRoutingKey() {
+    String makeRoutingKey() {
         return String.join(".", operation.operationName(), patientName, doctor.getName());
     }
 
-    public static String makeRoutingKey(String operationName, String patientName, String doctorName) {
+    static String makeRoutingKey(String operationName, String patientName, String doctorName) {
         return String.join(".", operationName, patientName, doctorName);
     }
 
@@ -28,7 +28,7 @@ public class DoctorRequest extends SerializationWrapper implements Serializable 
         return String.format("Badanie: %s. Pacjent: %s. Zlecił: %s.", operation, patientName, doctor);
     }
 
-    public Worker getDoctor() {
+    Worker getDoctor() {
         return doctor;
     }
 }

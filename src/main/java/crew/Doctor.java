@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 public class Doctor extends Worker {
 
-    private transient BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    private final transient BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
     public void work() throws IOException {
@@ -27,7 +27,7 @@ public class Doctor extends Worker {
 
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 SerializationWrapper reply = SerializationUtils.deserialize(body);
                 System.out.println(String.format("Otrzymano>\t %s", reply));
             }
@@ -36,14 +36,15 @@ public class Doctor extends Worker {
         getChannel().basicConsume(queueName, true, consumer);
         getChannel().basicConsume(adminQ, true, consumer);
 
-        while (true) {
-            send(exchangeName);
-        }
+        while (send(exchangeName)) ;
     }
 
-    private void send(String exchangeName) throws IOException {
+    private boolean send(String exchangeName) throws IOException {
         System.out.println("Podaj imie pacienta: ");
         String patientName = bufferedReader.readLine();
+
+        if (patientName.equals("exit")) return false;
+
         System.out.println("Podaj typ badania: ");
         String type = bufferedReader.readLine();
 
@@ -53,10 +54,12 @@ public class Doctor extends Worker {
         getChannel().basicPublish(exchangeName, request.makeRoutingKey(), null, data);
 
         System.out.println(String.format("Wyslano>\t %s", request));
+
+        return true;
     }
 
     @Override
     public String toString() {
-        return String.format("Doktor %s", getName());
+        return String.format("Doktor %s", super.getName());
     }
 }

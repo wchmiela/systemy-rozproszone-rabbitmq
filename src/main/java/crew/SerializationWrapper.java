@@ -1,5 +1,5 @@
 package crew;
 
-public abstract class SerializationWrapper {
+abstract class SerializationWrapper {
     //for better serialization
 }

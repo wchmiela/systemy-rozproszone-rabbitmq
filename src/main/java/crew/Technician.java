@@ -8,9 +8,9 @@ import java.io.IOException;
 
 public class Technician extends Worker {
 
-    private Operation firstSkill;
-    private Operation secondSkill;
-    private Technician myself;
+    private final Operation firstSkill;
+    private final Operation secondSkill;
+    private final Technician myself;
 
     public Technician(Operation firstSkill, Operation secondSkill) {
         this.firstSkill = firstSkill;
@@ -21,7 +21,6 @@ public class Technician extends Worker {
     @Override
     public void work() throws IOException {
         String exchangeName = EXCHANGE_NAME;
-
         getChannel().exchangeDeclare(exchangeName, BuiltinExchangeType.TOPIC);
 
         String firstSkillQueue = getChannel().queueDeclare(
@@ -34,11 +33,11 @@ public class Technician extends Worker {
                 false, false, false, null).getQueue();
         getChannel().queueBind(secondSkillQueue, exchangeName, secondSkillQueue);
 
-        String adminQ = getChannel().queueDeclare(getName(),
+        String adminQueue = getChannel().queueDeclare(getName(),
                 false, false, false, null).getQueue();
-        getChannel().queueBind(adminQ, exchangeName, "Info");
+        getChannel().queueBind(adminQueue, exchangeName, AdminMessage.makeRoutingKey());
 
-        Consumer consumer = new DefaultConsumer(getChannel()) {
+        Consumer doctorConsumer = new DefaultConsumer(getChannel()) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 DoctorRequest request = SerializationUtils.deserialize(body);
@@ -52,21 +51,21 @@ public class Technician extends Worker {
             }
         };
 
-        Consumer consumer2 = new DefaultConsumer(getChannel()) {
+        Consumer adminConsumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 SerializationWrapper reply = SerializationUtils.deserialize(body);
                 System.out.println(String.format("Otrzymano>\t %s", reply));
             }
         };
 
-        getChannel().basicConsume(firstSkillQueue, true, consumer);
-        getChannel().basicConsume(secondSkillQueue, true, consumer);
-        getChannel().basicConsume(adminQ, true, consumer2);
+        getChannel().basicConsume(firstSkillQueue, true, doctorConsumer);
+        getChannel().basicConsume(secondSkillQueue, true, doctorConsumer);
+        getChannel().basicConsume(adminQueue, true, adminConsumer);
     }
 
     @Override
     public String toString() {
-        return String.format("Technik %s z umiejętnościami %s and %s ", getName(), firstSkill, secondSkill);
+        return String.format("Technik %s z umiejętnościami %s and %s ", super.getName(), firstSkill, secondSkill);
     }
 }

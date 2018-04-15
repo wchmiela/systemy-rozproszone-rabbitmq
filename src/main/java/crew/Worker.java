@@ -10,7 +10,13 @@ public abstract class Worker implements Serializable {
     private String name;
     private transient Channel channel;
 
-    public final static String EXCHANGE_NAME = "wojtek";
+    final static String EXCHANGE_NAME = "wojtek";
+
+    public abstract void work() throws IOException;
+
+    public void introduceYourself() {
+        System.out.println(this);
+    }
 
     public void setName(String newName) {
         this.name = newName;
@@ -20,17 +26,11 @@ public abstract class Worker implements Serializable {
         return name;
     }
 
-    public void introduceYourself() {
-        System.out.println(this);
-    }
-
-    public abstract void work() throws IOException;
-
     public void setChanel(Channel channel) {
         this.channel = channel;
     }
 
-    public Channel getChannel() {
+    Channel getChannel() {
         return channel;
     }
 }
