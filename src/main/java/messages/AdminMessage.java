@@ -1,7 +1,6 @@
 package messages;
 
 import crew.Worker;
-import messages.SerializationWrapper;
 
 import java.io.Serializable;
 

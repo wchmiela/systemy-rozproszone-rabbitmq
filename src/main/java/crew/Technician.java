@@ -52,20 +52,24 @@ public class Technician extends Worker {
 
                 getChannel().basicPublish(exchangeName, reply.makeRoutingKey(), null, serializedReply);
                 System.out.println(String.format("Wyslano>\t %s", reply));
+
+                getChannel().basicAck(envelope.getDeliveryTag(), false);
             }
         };
 
         Consumer adminConsumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 SerializationWrapper reply = SerializationUtils.deserialize(body);
                 System.out.println(String.format("Otrzymano>\t %s", reply));
+
+                getChannel().basicAck(envelope.getDeliveryTag(), false);
             }
         };
 
-        getChannel().basicConsume(firstSkillQueue, true, doctorConsumer);
-        getChannel().basicConsume(secondSkillQueue, true, doctorConsumer);
-        getChannel().basicConsume(adminQueue, true, adminConsumer);
+        getChannel().basicConsume(firstSkillQueue, false, doctorConsumer);
+        getChannel().basicConsume(secondSkillQueue, false, doctorConsumer);
+        getChannel().basicConsume(adminQueue, false, adminConsumer);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package crew;
 
 import com.rabbitmq.client.*;
+import messages.AdminMessage;
 import messages.DoctorRequest;
 import messages.SerializationWrapper;
 import org.apache.commons.lang3.SerializationUtils;
@@ -25,18 +26,20 @@ public class Doctor extends Worker {
 
         String adminQ = getChannel().queueDeclare(getName(),
                 false, false, false, null).getQueue();
-        getChannel().queueBind(adminQ, exchangeName, "Info");
+        getChannel().queueBind(adminQ, exchangeName, AdminMessage.makeRoutingKey());
 
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 SerializationWrapper reply = SerializationUtils.deserialize(body);
                 System.out.println(String.format("Otrzymano>\t %s", reply));
+
+                getChannel().basicAck(envelope.getDeliveryTag(), false);
             }
         };
 
-        getChannel().basicConsume(queueName, true, consumer);
-        getChannel().basicConsume(adminQ, true, consumer);
+        getChannel().basicConsume(queueName, false, consumer);
+        getChannel().basicConsume(adminQ, false, consumer);
 
         while (send(exchangeName)) ;
     }

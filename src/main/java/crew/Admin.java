@@ -23,14 +23,16 @@ public class Admin extends Worker {
 
         Consumer consumer = new DefaultConsumer(getChannel()) {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 SerializationWrapper received = SerializationUtils.deserialize(body);
 
                 System.out.println(String.format("Otrzymano>\t %s", received));
+
+                getChannel().basicAck(envelope.getDeliveryTag(), false);
             }
         };
 
-        getChannel().basicConsume(queueName, true, consumer);
+        getChannel().basicConsume(queueName, false, consumer);
 
         while (send(exchangeName));
     }
